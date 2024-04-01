@@ -131,7 +131,7 @@ fig_sakura_regions <- sakura_data |>
   geom_point(color = colors[1], alpha = 0.5, size = 2) +
   geom_smooth(color = colors[2], se = FALSE, size = 2) +
   facet_wrap(~region, nrow = 1) + 
-  labs(title = expression("Day of the year with peak cherry tree blossom for Japanese cities since 1953"),
+  labs(title = expression("Day of the year with peak cherry tree blossom for regions in Japan since 1953"),
        subtitle = "Cities in northern regions Hokkaidō and Honshū exhibit earlier full blooms, while Ryukyu Islands even later",
        x = NULL, y = NULL) +
   scale_x_continuous(breaks = seq(1950, 2030, by = 20)) +
