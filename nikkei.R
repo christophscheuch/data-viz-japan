@@ -3,8 +3,11 @@ library(tidyquant)
 library(ggtext)
 library(extrafont)
 
+# TODO: add dividend yields
+# TODO: fix font usage for ggsave
+
 # Set global theme
-theme_set(theme_classic(base_family = "SF Pro Light", base_size = 16))
+theme_set(theme_classic(base_family = "asap", base_size = 16))
 
 theme_update(
   plot.title.position = "plot",
@@ -26,7 +29,7 @@ end_date <- "2024-03-31"
 # Since 1965: on YahooFinance
 # Between 1949 and 1964: official archives (https://indexes.nikkei.co.jp/en/nkave/archives/data)
 # Currency in JPY
-  nikkei <- tq_get("^N225", get = "stock.prices", from = start_date, to = end_date) |> 
+nikkei <- tq_get("^N225", get = "stock.prices", from = start_date, to = end_date) |> 
   drop_na() |> 
   group_by(month = floor_date(date, "month")) |> 
   filter(date == max(date)) |> 
@@ -105,7 +108,7 @@ index_data_monthly <- nikkei |>
 fig_nikkei_vs_sp500 <- ggplot(index_data_monthly, aes(x = date, y = value, color = type)) +
   geom_line(linewidth = 1) +
   labs(
-    title = paste0("<span style='color:", colors[1], ";font-family:\"SF Pro\";'>**Nikkei 225**</span> and <span style='color:", colors[2], ";font-family:\"SF Pro\";'>**S&P 500**</span> stock market performance since 1960"),
+    title = paste0("<span style='color:", colors[1], ";'>**Nikkei 225**</span> and <span style='color:", colors[2], ";'>**S&P 500**</span> stock market performance since 1960"),
     subtitle = "Both indexes are denominated in Yen and start at 100. Data from Yahoo Finance and official Nikkei archives."
   ) +
   scale_color_manual(values = colors) +
@@ -122,14 +125,8 @@ fig_nikkei_vs_sp500 <- ggplot(index_data_monthly, aes(x = date, y = value, color
   )
 fig_nikkei_vs_sp500
 
-# Install https://www.xquartz.org/ to make Cairo work on Mac
-Cairo::CairoFonts(
-  regular = "SF Pro Light",
-  bold = "SF Pro"
-)
-Cairo::Cairo(file = "output/fig_nikkei_vs_sp500.png", height = 8, width = 12, units = "in", dpi = 300, type = "png")
-print(fig_nikkei_vs_sp500)
-dev.off()
+ggsave(plot = fig_nikkei_vs_sp500, filename = "output/fig_nikkei_vs_sp500.png",
+       height = 8, width = 12)
 
 # List of companies with market cap 
 # Source: https://companiesmarketcap.com/japan/largest-companies-in-japan-by-market-cap/

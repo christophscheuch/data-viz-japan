@@ -2,9 +2,12 @@
 library(tidyverse)
 library(ggrepel)
 library(rnaturalearth)
+library(showtext)
+
+# font_add_google("Asap", "asap")
 
 # Set global theme
-theme_set(theme_classic(base_family = "SF Pro Light", base_size = 16))
+theme_set(theme_classic(base_family = "asap", base_size = 16))
 
 theme_update(
   plot.title.position = "plot",
@@ -93,6 +96,8 @@ sakura_data <- sakura_dates |>
 
 # Time to full bloom in Kyoto ----------------------------------------
 today <- tibble(year = 2024, full_bloom_day = as.integer(as.Date("2024-04-03")-as.Date("2024-01-01")))
+showtext_auto()
+showtext_opts(dpi = 300)
 fig_sakura_kyoto <- sakura_data |> 
   filter(location == "Kyoto") |> 
   ggplot(aes(x = year, y = full_bloom_day)) +
@@ -104,7 +109,7 @@ fig_sakura_kyoto <- sakura_data |>
   ) + 
   labs(title = expression("Day of the year with peak cherry tree blossom in Kyoto since 1953"),
        subtitle = "Bloom dates have significantly declined, but 2024 is no outlier in light of historical data",
-       size = "Time from first to full bloom:",
+       size = "Time from first to full bloom",
        x = NULL, y = NULL) +
   scale_x_continuous(breaks = seq(1950, 2030, by = 20)) +
   scale_y_continuous(breaks = seq(75, 105, by = 15)) +
@@ -112,14 +117,11 @@ fig_sakura_kyoto <- sakura_data |>
   theme(
     axis.title.x = element_blank(), 
     axis.title.y = element_blank(),
-    # axis.text.x = element_blank(),
-    # axis.text.y = element_blank(),
     axis.ticks = element_blank(),
     axis.line = element_blank(),
     strip.background = element_blank(),
     strip.text = element_text(face = "bold")
-  ) +
-  theme(legend.position = "bottom")
+  )
 fig_sakura_kyoto
 
 ggsave(plot = fig_sakura_kyoto, filename = "output/fig_sakura_kyoto.png",
@@ -139,8 +141,6 @@ fig_sakura_regions <- sakura_data |>
   theme(
     axis.title.x = element_blank(), 
     axis.title.y = element_blank(),
-    # axis.text.x = element_blank(),
-    # axis.text.y = element_blank(),
     axis.ticks = element_blank(),
     axis.line = element_blank(),
     strip.background = element_blank(),
@@ -206,29 +206,28 @@ ggsave(plot = fig_sakura_regions, filename = "output/fig_sakura_regions.png",
 #   )
 
 # Time to full bloom --------------------------------------------------
-# fig_time_to_full_bloom <- sakura_data |> 
-#   ggplot(aes(x = year, y = time_to_full_bloom)) +
-#   geom_point(color = colors[1], alpha = 0.5) +
-#   geom_smooth(color = colors[2], se = FALSE) +
-#   facet_wrap(~region, nrow = 1) + 
-#   labs(title = "Number of days between first and full bloom since 1953",
-#        subtitle = "Hokkaidō exhibits the shortest and decreasing blooming periods, while Kyūshū's have lengthened",
-#        x = NULL, y = NULL) +
-#   scale_x_continuous(breaks = seq(1950, 2030, by = 20)) +
-#   # scale_y_continuous(breaks = seq(7, 42, by = 7)) +
-#   theme(
-#     axis.title.x = element_blank(), 
-#     axis.title.y = element_blank(),
-#     # axis.text.x = element_blank(),
-#     # axis.text.y = element_blank(),
-#     axis.ticks = element_blank(),
-#     axis.line = element_blank(),
-#     strip.background = element_blank(),
-#     strip.text = element_text(face = "bold")
-#   )
-# fig_time_to_full_bloom
-# 
-# ggsave(plot = fig_time_to_full_bloom, filename = "output/fig_time_to_full_bloom.png")
+fig_time_to_full_bloom <- sakura_data |>
+  ggplot(aes(x = year, y = time_to_full_bloom)) +
+  geom_point(color = colors[1], alpha = 0.5) +
+  geom_smooth(color = colors[2], se = FALSE) +
+  facet_wrap(~region, nrow = 1) +
+  labs(title = "Days from blossoms opening to peak bloom for regions in Japan",
+       subtitle = "Hokkaidō exhibits the shortest and decreasing blooming periods, while Kyūshū's have lengthened",
+       x = NULL, y = NULL) +
+  scale_x_continuous(breaks = seq(1950, 2030, by = 20)) +
+  theme(
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    # axis.ticks = element_blank(),
+    axis.line = element_blank(),
+    strip.background = element_blank(),
+    strip.text = element_text(face = "bold")
+  )
+fig_time_to_full_bloom
+
+ggsave(plot = fig_time_to_full_bloom, 
+       filename = "output/fig_time_to_full_bloom.png",
+       height = 8, width = 12)
 
 # Time to first bloom in Tokyo ----------------------------------------
 # sakura_data |> 
