@@ -218,7 +218,6 @@ fig_time_to_full_bloom <- sakura_data |>
   theme(
     axis.title.x = element_blank(),
     axis.title.y = element_blank(),
-    # axis.ticks = element_blank(),
     axis.line = element_blank(),
     strip.background = element_blank(),
     strip.text = element_text(face = "bold")
